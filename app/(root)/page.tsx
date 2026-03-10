@@ -2,8 +2,12 @@ import React from 'react'
 import Image from 'next/image'
 import { sampleBooks } from '@/lib/constants'
 import BookCard from '@/components/BookCard'
-
-const page = () => {
+import { getAllBooks } from '@/lib/actions/book.actions'
+import heroImage from '../../assets/hero-illustration.png'
+const page = async() => {
+  // let books: any[] = []
+  const bookResults = await getAllBooks()
+  const books = bookResults.success ? bookResults.data : []
   return (
     <main className="wrapper container">
       <section className="wrapper py-16 mb-10 md:mb-16">
@@ -24,7 +28,7 @@ const page = () => {
           {/* center illustration */}
           <div className="flex-1 flex justify-center">
             <Image
-              src="/assets/_hero-illustration.png"
+              src={heroImage}
               alt="Vintage books and globe"
               width={300}
               height={200}
@@ -70,7 +74,7 @@ const page = () => {
       </section>
 
       <div className='library-books-grid'>
-        {sampleBooks.map((book) => {
+        {books.map((book) => {
           return <BookCard key={book._id} title={book.title} author={book.author} coverURL={book.coverURL} slug = {book.slug} />;
         })}
       </div>

@@ -39,6 +39,11 @@ export default function UploadForm() {
     console.log('form submit', data);
     if(!userId){
       toast.error('Please login to upload a book')
+      return
+    }
+    if (!data.pdfFile) {
+      toast.error('Please select a PDF file')
+      return
     }
     // Normally you would upload files and create a book record here
     try {
@@ -50,7 +55,7 @@ export default function UploadForm() {
         return
       }
       const fileTitle = data.title.replace(/\s+/g, '_').toLowerCase();
-      const pdfFile = data.pdfFile;
+      const pdfFile = data.pdfFile as File;
       const parsedPDF  = await parsePDFFile(pdfFile)
       if(parsedPDF.content.length === 0){
         toast.error('Failed to parse PDF. Please try again with a different file.')
@@ -61,47 +66,49 @@ export default function UploadForm() {
         handleUploadUrl: '/api/upload',
         contentType: 'application/pdf'
       })
-      let coverUrl:string
+      let coverUrl: string
       if(data.coverImage){
-        const coverFile = data.coverImage
+        const coverFile = data.coverImage as File
         const uploadedCoverBlob = await upload(`${fileTitle}_cover.png`, coverFile, {
           access:'public',
           handleUploadUrl:'/api/upload',
           contentType: coverFile.type
         })
-      coverUrl = uploadedCoverBlob.url
+        coverUrl = uploadedCoverBlob.url
       }
       else{
         const response = await fetch(parsedPDF.cover)
         const blob = await response.blob()
-        const uploadedCoverBlob = await upload(`${fileTitle}_cover.png`, coverFile, {
+        const uploadedCoverBlob = await upload(`${fileTitle}_cover.png`, blob, {
           access:'public',
-          handleuploadUrl:'/api/upload',
+          handleUploadUrl:'/api/upload',
           contentType: 'image/png'
         })
+        coverUrl = uploadedCoverBlob.url
       }
     
-    const book = await createBook({
-      clerkId: userId,
-      title: data.title,
-      author: data.author,
-      persona: data.persona,
-      fileURL: uploadedPdfBlob,
-      fileBlobKey: uploadedPdfBlob.pathname,
-      coverURL: coverUrl,
-      fileSize: pdfFile.size,
-    })
-    if(!book.success) throw new Error ('failed to create book')
-    if(book.alreadyExists){
-      toast.info('Book already exists')
-      router.push(`/books/${existCheck.book.slug}`)
-      return;
-    }
+      const book = await createBook({
+        clerkId: userId,
+        title: data.title,
+        author: data.author,
+        persona: data.persona,
+        fileURL: uploadedPdfBlob.url,
+        fileBlobKey: uploadedPdfBlob.pathname,
+        coverURL: coverUrl,
+        fileSize: pdfFile.size,
+      })
+      if(!book.success) throw new Error ('failed to create book')
+      if(book.alreadyExists){
+        toast.info('Book already exists')
+        router.push(`/books/${book.data.slug}`)
+        return;
+      }
 
-    const segments = await saveBookSegments(book.data._id, userId, parsedPDF.context)
+    const segments = await saveBookSegments(book.data._id, userId, parsedPDF.content)
     if(!segments.success){
-      toast.error('Failed to save Books')
-      throw new Error('Failed to save Book segments')
+      const errorMsg = segments.error || 'Failed to save Book segments'
+      toast.error(errorMsg)
+      throw new Error(errorMsg)
     }
   router.push('/')
   }

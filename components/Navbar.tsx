@@ -5,7 +5,7 @@ import React from 'react'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { Show, SignInButton, SignUpButton, UserButton } from '@clerk/nextjs'
-
+import  logoImage from '../assets/logo.png'
  const Navbar = () => {
   const navItems = [
     {label:'Library', href:'/'},
@@ -17,7 +17,7 @@ import { Show, SignInButton, SignUpButton, UserButton } from '@clerk/nextjs'
     <header className="w-full fixed z-50 bg-[var(--bg-primary)]">
       <div className='wrapper navbar-height py-4 flex justify-between items-center'>
         <Link href ="/" className='flex gap-0.5 items-center'>
-          <Image src="/assets/_logo.png" width={42} height = {26} alt='Bookified' />
+          <Image src={logoImage} width={42} height = {26} alt='Bookified' />
           <span className='logo-text'>Bookified</span>
         </Link>
         <nav className='w-fit flex gap-7.5 items-center'>
