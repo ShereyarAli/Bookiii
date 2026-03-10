@@ -12,7 +12,7 @@ export async function POST(request: Request): Promise<NextResponse>{
       body,
       request,
       // provide callbackUrl from environment or rely on VERCEL_BLOB_CALLBACK_URL
-      callbackUrl: process.env.VERCEL_BLOB_CALLBACK_URL,
+      // callbackUrl: process.env.VERCEL_BLOB_CALLBACK_URL,
       onBeforeGenerateToken: async () => {
         const { userId } = await auth()
         if (!userId) throw new Error('Unauthorized')
