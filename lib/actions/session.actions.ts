@@ -3,24 +3,46 @@
 import VoiceSession from "@/db/models/voiceSession.model"
 import { connectToDB } from "@/db/mongoose"
 import { StartSessionResult } from "@/types"
-import { getCurrentBillingPeriodStart } from "../subscriptions.constants"
+import { getCurrentBillingPeriodStart, PLAN_LIMITS } from "../subscriptions.constants"
 
 
-export const startVoiceSession  = async (clerkId:string, bookId:string): Promise<StartSessionResult> => {
+export const startVoiceSession = async (clerkId: string, bookId: string): Promise<StartSessionResult> => {
   try {
     await connectToDB()
+    const { getUserPlan } = await import("@/lib/subscription.server");
+    const { PLAN_LIMITS, getCurrentBillingPeriodStart } = await import("../subscriptions.constants");
+
+    const plan = await getUserPlan();
+    const limits = PLAN_LIMITS[plan];
+    const billingPeriodStart = getCurrentBillingPeriodStart();
+
+    const sessionCount = await VoiceSession.countDocuments({
+      clerkId,
+      billingPeriodStart
+    });
+
+    if (sessionCount >= limits.maxSessionsPerMonth) {
+      const { revalidatePath } = await import("next/cache");
+      revalidatePath("/");
+
+      return {
+        success: false,
+        error: `You have reached the monthly session limit for your ${plan} plan (${limits.maxSessionsPerMonth}). Please upgrade for more sessions.`,
+        isBillingError: true,
+      };
+    }
     const session = await VoiceSession.create({
-      clerkId,bookId,startedAt:new Date(),
+      clerkId, bookId, startedAt: new Date(),
       billingPeriodStart: getCurrentBillingPeriodStart(),
-      durationSeconds:0
+      durationSeconds: 0
     })
-    return{
-      success:true,
-      sessionId:session._id.toString()
+    return {
+      success: true,
+      sessionId: session._id.toString()
     }
   } catch (error) {
     console.error('Error starting a session')
-    return{
+    return {
       success: false,
       error: "Voice session failed. Try again"
 

@@ -97,7 +97,11 @@ export default function UploadForm() {
         coverURL: coverUrl,
         fileSize: pdfFile.size,
       })
-      if(!book.success) throw new Error ('failed to create book')
+      if(!book.success) {
+        toast.error(String(book.error))
+        router.push('/subscriptions')
+        return
+      }
       if(book.alreadyExists){
         toast.info('Book already exists')
         router.push(`/books/${book.data.slug}`)

@@ -10,6 +10,7 @@ import  logoImage from '../assets/logo.png'
   const navItems = [
     {label:'Library', href:'/'},
     {label:'Add new', href:'/books/new'},
+    {label:'Pricing', href:'/subscriptions'},
   ]
   const pathName = usePathname()
   return (

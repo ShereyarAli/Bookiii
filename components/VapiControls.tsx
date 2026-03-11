@@ -1,6 +1,6 @@
 'use client'
 
-import useVapi from '@/app/(root)/hooks/useVapi'
+import useVapi from '@/hooks/useVapi'
 import { IBook } from '@/types'
 import { Mic, MicOff } from 'lucide-react'
 import React from 'react'
@@ -42,13 +42,13 @@ const VapiControls = ({ book} : { book: IBook }) => {
               <div className="flex gap-2">
                 <div className="vapi-status-indicator">
                   <div className="vapi-status-dot vapi-status-dot-ready"></div>
-                  <span className="vapi-status-text">Ready</span>
+                  <span className="vapi-status-text">{status}</span>
                 </div>
                 <div className="bg-white px-3 py-1 rounded-full text-sm font-medium">
                   Voice: {book.persona}
                 </div>
                 <div className="bg-white px-3 py-1 rounded-full text-sm font-medium">
-                  0:00/15:00
+                  0:{duration}/15:00
                 </div>
               </div>
             </div>

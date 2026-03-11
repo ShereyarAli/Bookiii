@@ -131,6 +131,7 @@ export function useVapi(book: IBook) {
                 transcriptType: string;
                 transcript: string;
             }) => {
+                 console.log('Vapi message event:', message);
                 if (message.type !== 'transcript') return;
 
                 // User finished speaking → AI is thinking
