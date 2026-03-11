@@ -20,8 +20,8 @@ const Transcript = ({ messages, currentMessage, currentUserMessage }: Transcript
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-    console.log(currentUserMessage)
-    console.log(currentMessage)
+    console.log(messages)
+    // console.log(currentMessage)
   }, [messages, currentMessage, currentUserMessage])
 
   const isEmpty = messages.length === 0 && !currentMessage && !currentUserMessage

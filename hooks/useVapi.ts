@@ -61,6 +61,7 @@ export function useVapi(book: IBook) {
     const voice = book.persona || DEFAULT_VOICE;
 
     // Set up Vapi event listeners
+
     useEffect(() => {
         const handlers = {
             'call-start': () => {
