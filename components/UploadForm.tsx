@@ -15,12 +15,12 @@ import { handleUpload, upload } from '@vercel/blob/client';
 import { parsePDFFile } from '@/lib/utils';
 import { BookUploadFormValues } from '@/types';
 
-
 export default function UploadForm() {
-  const [pdfFile, setPdfFile] = useState(null);
-  const [coverFile, setCoverFile] = useState(null);
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const [coverFile, setCoverFile] = useState<File | null>(null);
   const router = useRouter()
   const {userId} = useAuth()
+  type VoiceKey = keyof typeof voiceOptions;
   const {
     register,
     handleSubmit,
@@ -118,27 +118,33 @@ export default function UploadForm() {
     }
   };
 
-  const handlePdfChange = (e) => {
-    const file = e.target.files?.[0] || null;
-    setPdfFile(file);
-    setValue('pdfFile', file);
-  };
+ const handlePdfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0] || null;
 
-  const handleCoverChange = (e) => {
-    const file = e.target.files?.[0] || null;
-    setCoverFile(file);
-    setValue('coverImage', file);
-  };
+  setPdfFile(file);
 
-  const removePdf = () => {
-    setPdfFile(null);
-    setValue('pdfFile', undefined);
-  };
+  if (file) {
+    setValue("pdfFile", file);
+  }
+};
 
-  const removeCover = () => {
-    setCoverFile(null);
-    setValue('coverImage', undefined);
-  };
+const handleCoverChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0] || null;
+  setCoverFile(file);
+  if (file) {
+    setValue("coverImage", file);
+  }
+};
+
+const removePdf = () => {
+  setPdfFile(null);
+  setValue("pdfFile", undefined);
+};
+
+const removeCover = () => {
+  setCoverFile(null);
+  setValue("coverImage", undefined);
+};
 
   return (
     <div className="new-book-wrapper">
@@ -277,8 +283,8 @@ export default function UploadForm() {
               </p>
               <div className="voice-selector-options">
                 {ids.map((id) => {
-                  const { name, description } = voiceOptions[id];
-                  const selected = selectedVoice === id;
+                const { name, description } = voiceOptions[id as keyof typeof voiceOptions];  
+                const selected = selectedVoice === id;         
                   return (
                     <label
                       key={id}

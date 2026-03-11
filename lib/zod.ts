@@ -14,7 +14,7 @@ export const UploadSchema = z.object({
   pdfFile: z
     .instanceof(File, { message: 'A PDF file is required' })
     .refine((file) => file.size <= MAX_FILE_SIZE, `Max size is 50MB`)
-    .refine((file) => ACCEPTED_PDF_TYPES.includes(file.type), 'Must be a PDF'),
+    .refine((file) => ACCEPTED_PDF_TYPES.includes(file.type), 'Must be a PDF').optional(),
   coverImage: z
     .instanceof(File)
     .optional()
