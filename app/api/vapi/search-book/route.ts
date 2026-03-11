@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
           return NextResponse.json({ result: 'no information found about this topic' });
         }
 
-        const segments = result.data;
+        const segments = result.data || [];
 
         if (segments.length === 0) {
           return NextResponse.json({ result: 'no information found about this topic' });
