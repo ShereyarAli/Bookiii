@@ -6,7 +6,7 @@ import { StartSessionResult } from "@/types"
 import { getCurrentBillingPeriodStart } from "../subscriptions.constants"
 
 
-export const startVoiceSession  = async (clerkId, bookId): Promise<StartSessionResult> => {
+export const startVoiceSession  = async (clerkId:string, bookId:string): Promise<StartSessionResult> => {
   try {
     await connectToDB()
     const session = await VoiceSession.create({

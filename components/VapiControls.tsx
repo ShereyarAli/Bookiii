@@ -7,7 +7,7 @@ import React from 'react'
 import Transcript from './Transcript'
 
 const VapiControls = ({ book} : { book: IBook }) => {
-  const { status, isActive, messages, currentMessage, currentUserMessage, duration, start, stop, clearErrors } = useVapi(book)
+  const { status, isActive, messages, currentMessage, currentUserMessage, duration, start, stop } = useVapi(book)
   return (
     <>
       <div className="max-w-4xl mx-auto space-y-6 ">
@@ -57,7 +57,7 @@ const VapiControls = ({ book} : { book: IBook }) => {
 
         {/* Transcript below header card */}
         <Transcript 
-          messages={messages} 
+          messages={messages.map(msg => ({ ...msg, role: msg.role as 'user' | 'assistant' }))}
           currentMessage={currentMessage}
           currentUserMessage={currentUserMessage}
         />
