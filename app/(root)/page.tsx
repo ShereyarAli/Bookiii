@@ -8,6 +8,7 @@ const page = async() => {
   // let books: any[] = []
   const bookResults = await getAllBooks()
   const books = (bookResults.success && bookResults.data) ? bookResults.data : []
+  console.log(books)
   return (
     <main className="wrapper container">
       <section className="wrapper py-16 mb-10 md:mb-16">

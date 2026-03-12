@@ -10,6 +10,7 @@ import { ASSISTANT_ID, DEFAULT_VOICE, VOICE_SETTINGS } from '@/lib/constants';
 import { getVoice } from '@/lib/utils';
 import { IBook, Messages } from '@/types';
 import { startVoiceSession, endVoiceSession } from '@/lib/actions/session.actions';
+import { toast } from 'sonner';
 
 export function useLatestRef<T>(value: T) {
     const ref = useRef(value);
@@ -234,12 +235,14 @@ export function useVapi(book: IBook) {
 
         setLimitError(null);
         setStatus('connecting');
+        console.log('started')
 
         try {
             // Check session limits and create session record
             const result = await startVoiceSession(userId, book._id);
-
+            
             if (!result.success) {
+                toast.error('Session limit reached. Please upgrade your plan.')
                 setLimitError(result.error || 'Session limit reached. Please upgrade your plan.');
                 setStatus('idle');
                 return;
