@@ -1,9 +1,10 @@
-import React from 'react'
+export const dynamic = "force-dynamic";
 import Image from 'next/image'
 import { sampleBooks } from '@/lib/constants'
 import BookCard from '@/components/BookCard'
 import { getAllBooks } from '@/lib/actions/book.actions'
 import heroImage from '../../assets/hero-illustration.png'
+
 const page = async() => {
   // let books: any[] = []
   const bookResults = await getAllBooks()
